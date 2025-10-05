@@ -29,18 +29,7 @@ as a subsection of the US Department of Labor. They also have related informatio
 regarding female/maternal labor force participation rates. I could use this data
 in combination with Census shapefiles.
 
-### Data Source 1: National Database of Childcare Prices
-
-URL: https://public.tableau.com/app/profile/women.s.bureau.department.of.labor/viz/CountyFactsheets/Childcareinthecounties
-
-Size: Variable
-
-The NDCP is the most complete federal resource on childcare cost and burden, with
-county level information for 48 states and DC. It is produced by the Women's Bureau
-as a subsection of the US Department of Labor. They also have related information
-regarding female/maternal labor force participation rates.
-
-### Data Source 1: HIFLD Childcare Centers Point Data
+### Data Source 2: HIFLD Childcare Centers Point Data
 
 URL: https://drive.google.com/drive/folders/1w6xOfJ_ptxfDJkChERRs9l9lIeFC-_TY
 
