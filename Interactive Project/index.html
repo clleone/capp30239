@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive HTML</title>
+    <script src="js/d3.v7.js"></script>
+    <style>
+      header {
+        font: 1rem "Helvetica", sans-serif;
+      }
+      .tooltip {
+        font: 1rem "Helvetica", sans-serif;
+      }
+      /* CSS, <link href="style.css" rel="stylesheet" /> once ready */
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Childcare Cost and Female Labor Force Participation</h1>
+</header>
+
+<section>
+    <div class="svg-output" id="maingraphic"></div>
+    <script>
+        // JS
+        let counts = [{"Cost":0.0,"FLFPR":0.0,"Count":8},{"Cost":0.0,"FLFPR":0.1,"Count":0},{"Cost":0.0,"FLFPR":0.2,"Count":2},{"Cost":0.0,"FLFPR":0.3,"Count":16},{"Cost":0.0,"FLFPR":0.4,"Count":18},{"Cost":0.0,"FLFPR":0.5,"Count":11},{"Cost":0.0,"FLFPR":0.6,"Count":5},{"Cost":0.0,"FLFPR":0.7,"Count":9},{"Cost":0.0,"FLFPR":0.8,"Count":10},{"Cost":0.0,"FLFPR":0.9,"Count":9},{"Cost":0.01,"FLFPR":0.0,"Count":11},{"Cost":0.01,"FLFPR":0.1,"Count":0},{"Cost":0.01,"FLFPR":0.2,"Count":12},{"Cost":0.01,"FLFPR":0.3,"Count":7},{"Cost":0.01,"FLFPR":0.4,"Count":1},{"Cost":0.01,"FLFPR":0.5,"Count":9},{"Cost":0.01,"FLFPR":0.6,"Count":0},{"Cost":0.01,"FLFPR":0.7,"Count":5},{"Cost":0.01,"FLFPR":0.8,"Count":18},{"Cost":0.01,"FLFPR":0.9,"Count":2},{"Cost":0.02,"FLFPR":0.0,"Count":5},{"Cost":0.02,"FLFPR":0.1,"Count":3},{"Cost":0.02,"FLFPR":0.2,"Count":6},{"Cost":0.02,"FLFPR":0.3,"Count":4},{"Cost":0.02,"FLFPR":0.4,"Count":10},{"Cost":0.02,"FLFPR":0.5,"Count":10},{"Cost":0.02,"FLFPR":0.6,"Count":3},{"Cost":0.02,"FLFPR":0.7,"Count":4},{"Cost":0.02,"FLFPR":0.8,"Count":8},{"Cost":0.02,"FLFPR":0.9,"Count":13},{"Cost":0.03,"FLFPR":0.0,"Count":15},{"Cost":0.03,"FLFPR":0.1,"Count":15},{"Cost":0.03,"FLFPR":0.2,"Count":9},{"Cost":0.03,"FLFPR":0.3,"Count":20},{"Cost":0.03,"FLFPR":0.4,"Count":6},{"Cost":0.03,"FLFPR":0.5,"Count":8},{"Cost":0.03,"FLFPR":0.6,"Count":14},{"Cost":0.03,"FLFPR":0.7,"Count":16},{"Cost":0.03,"FLFPR":0.8,"Count":11},{"Cost":0.03,"FLFPR":0.9,"Count":5},{"Cost":0.04,"FLFPR":0.0,"Count":10},{"Cost":0.04,"FLFPR":0.1,"Count":15},{"Cost":0.04,"FLFPR":0.2,"Count":15},{"Cost":0.04,"FLFPR":0.3,"Count":16},{"Cost":0.04,"FLFPR":0.4,"Count":2},{"Cost":0.04,"FLFPR":0.5,"Count":12},{"Cost":0.04,"FLFPR":0.6,"Count":20},{"Cost":0.04,"FLFPR":0.7,"Count":5},{"Cost":0.04,"FLFPR":0.8,"Count":0},{"Cost":0.04,"FLFPR":0.9,"Count":7},{"Cost":0.05,"FLFPR":0.0,"Count":8},{"Cost":0.05,"FLFPR":0.1,"Count":3},{"Cost":0.05,"FLFPR":0.2,"Count":18},{"Cost":0.05,"FLFPR":0.3,"Count":2},{"Cost":0.05,"FLFPR":0.4,"Count":9},{"Cost":0.05,"FLFPR":0.5,"Count":14},{"Cost":0.05,"FLFPR":0.6,"Count":11},{"Cost":0.05,"FLFPR":0.7,"Count":11},{"Cost":0.05,"FLFPR":0.8,"Count":3},{"Cost":0.05,"FLFPR":0.9,"Count":11},{"Cost":0.06,"FLFPR":0.0,"Count":3},{"Cost":0.06,"FLFPR":0.1,"Count":4},{"Cost":0.06,"FLFPR":0.2,"Count":13},{"Cost":0.06,"FLFPR":0.3,"Count":14},{"Cost":0.06,"FLFPR":0.4,"Count":1},{"Cost":0.06,"FLFPR":0.5,"Count":7},{"Cost":0.06,"FLFPR":0.6,"Count":10},{"Cost":0.06,"FLFPR":0.7,"Count":15},{"Cost":0.06,"FLFPR":0.8,"Count":19},{"Cost":0.06,"FLFPR":0.9,"Count":2},{"Cost":0.07,"FLFPR":0.0,"Count":5},{"Cost":0.07,"FLFPR":0.1,"Count":5},{"Cost":0.07,"FLFPR":0.2,"Count":5},{"Cost":0.07,"FLFPR":0.3,"Count":20},{"Cost":0.07,"FLFPR":0.4,"Count":13},{"Cost":0.07,"FLFPR":0.5,"Count":12},{"Cost":0.07,"FLFPR":0.6,"Count":19},{"Cost":0.07,"FLFPR":0.7,"Count":19},{"Cost":0.07,"FLFPR":0.8,"Count":9},{"Cost":0.07,"FLFPR":0.9,"Count":20},{"Cost":0.08,"FLFPR":0.0,"Count":6},{"Cost":0.08,"FLFPR":0.1,"Count":8},{"Cost":0.08,"FLFPR":0.2,"Count":12},{"Cost":0.08,"FLFPR":0.3,"Count":11},{"Cost":0.08,"FLFPR":0.4,"Count":15},{"Cost":0.08,"FLFPR":0.5,"Count":8},{"Cost":0.08,"FLFPR":0.6,"Count":8},{"Cost":0.08,"FLFPR":0.7,"Count":6},{"Cost":0.08,"FLFPR":0.8,"Count":18},{"Cost":0.08,"FLFPR":0.9,"Count":12},{"Cost":0.09,"FLFPR":0.0,"Count":15},{"Cost":0.09,"FLFPR":0.1,"Count":16},{"Cost":0.09,"FLFPR":0.2,"Count":6},{"Cost":0.09,"FLFPR":0.3,"Count":4},{"Cost":0.09,"FLFPR":0.4,"Count":12},{"Cost":0.09,"FLFPR":0.5,"Count":2},{"Cost":0.09,"FLFPR":0.6,"Count":4},{"Cost":0.09,"FLFPR":0.7,"Count":5},{"Cost":0.09,"FLFPR":0.8,"Count":0},{"Cost":0.09,"FLFPR":0.9,"Count":10},{"Cost":0.1,"FLFPR":0.0,"Count":6},{"Cost":0.1,"FLFPR":0.1,"Count":4},{"Cost":0.1,"FLFPR":0.2,"Count":15},{"Cost":0.1,"FLFPR":0.3,"Count":10},{"Cost":0.1,"FLFPR":0.4,"Count":17},{"Cost":0.1,"FLFPR":0.5,"Count":7},{"Cost":0.1,"FLFPR":0.6,"Count":9},{"Cost":0.1,"FLFPR":0.7,"Count":7},{"Cost":0.1,"FLFPR":0.8,"Count":19},{"Cost":0.1,"FLFPR":0.9,"Count":5},{"Cost":0.11,"FLFPR":0.0,"Count":0},{"Cost":0.11,"FLFPR":0.1,"Count":6},{"Cost":0.11,"FLFPR":0.2,"Count":11},{"Cost":0.11,"FLFPR":0.3,"Count":20},{"Cost":0.11,"FLFPR":0.4,"Count":19},{"Cost":0.11,"FLFPR":0.5,"Count":3},{"Cost":0.11,"FLFPR":0.6,"Count":13},{"Cost":0.11,"FLFPR":0.7,"Count":16},{"Cost":0.11,"FLFPR":0.8,"Count":3},{"Cost":0.11,"FLFPR":0.9,"Count":13},{"Cost":0.12,"FLFPR":0.0,"Count":7},{"Cost":0.12,"FLFPR":0.1,"Count":6},{"Cost":0.12,"FLFPR":0.2,"Count":8},{"Cost":0.12,"FLFPR":0.3,"Count":3},{"Cost":0.12,"FLFPR":0.4,"Count":7},{"Cost":0.12,"FLFPR":0.5,"Count":19},{"Cost":0.12,"FLFPR":0.6,"Count":6},{"Cost":0.12,"FLFPR":0.7,"Count":17},{"Cost":0.12,"FLFPR":0.8,"Count":11},{"Cost":0.12,"FLFPR":0.9,"Count":14},{"Cost":0.13,"FLFPR":0.0,"Count":3},{"Cost":0.13,"FLFPR":0.1,"Count":10},{"Cost":0.13,"FLFPR":0.2,"Count":8},{"Cost":0.13,"FLFPR":0.3,"Count":17},{"Cost":0.13,"FLFPR":0.4,"Count":12},{"Cost":0.13,"FLFPR":0.5,"Count":18},{"Cost":0.13,"FLFPR":0.6,"Count":0},{"Cost":0.13,"FLFPR":0.7,"Count":9},{"Cost":0.13,"FLFPR":0.8,"Count":3},{"Cost":0.13,"FLFPR":0.9,"Count":2},{"Cost":0.14,"FLFPR":0.0,"Count":10},{"Cost":0.14,"FLFPR":0.1,"Count":13},{"Cost":0.14,"FLFPR":0.2,"Count":14},{"Cost":0.14,"FLFPR":0.3,"Count":6},{"Cost":0.14,"FLFPR":0.4,"Count":17},{"Cost":0.14,"FLFPR":0.5,"Count":1},{"Cost":0.14,"FLFPR":0.6,"Count":14},{"Cost":0.14,"FLFPR":0.7,"Count":14},{"Cost":0.14,"FLFPR":0.8,"Count":7},{"Cost":0.14,"FLFPR":0.9,"Count":18},{"Cost":0.15,"FLFPR":0.0,"Count":9},{"Cost":0.15,"FLFPR":0.1,"Count":10},{"Cost":0.15,"FLFPR":0.2,"Count":7},{"Cost":0.15,"FLFPR":0.3,"Count":16},{"Cost":0.15,"FLFPR":0.4,"Count":7},{"Cost":0.15,"FLFPR":0.5,"Count":10},{"Cost":0.15,"FLFPR":0.6,"Count":13},{"Cost":0.15,"FLFPR":0.7,"Count":13},{"Cost":0.15,"FLFPR":0.8,"Count":16},{"Cost":0.15,"FLFPR":0.9,"Count":4},{"Cost":0.16,"FLFPR":0.0,"Count":12},{"Cost":0.16,"FLFPR":0.1,"Count":10},{"Cost":0.16,"FLFPR":0.2,"Count":15},{"Cost":0.16,"FLFPR":0.3,"Count":19},{"Cost":0.16,"FLFPR":0.4,"Count":2},{"Cost":0.16,"FLFPR":0.5,"Count":10},{"Cost":0.16,"FLFPR":0.6,"Count":11},{"Cost":0.16,"FLFPR":0.7,"Count":13},{"Cost":0.16,"FLFPR":0.8,"Count":4},{"Cost":0.16,"FLFPR":0.9,"Count":14},{"Cost":0.17,"FLFPR":0.0,"Count":17},{"Cost":0.17,"FLFPR":0.1,"Count":17},{"Cost":0.17,"FLFPR":0.2,"Count":17},{"Cost":0.17,"FLFPR":0.3,"Count":2},{"Cost":0.17,"FLFPR":0.4,"Count":12},{"Cost":0.17,"FLFPR":0.5,"Count":5},{"Cost":0.17,"FLFPR":0.6,"Count":2},{"Cost":0.17,"FLFPR":0.7,"Count":8},{"Cost":0.17,"FLFPR":0.8,"Count":7},{"Cost":0.17,"FLFPR":0.9,"Count":8},{"Cost":0.18,"FLFPR":0.0,"Count":19},{"Cost":0.18,"FLFPR":0.1,"Count":17},{"Cost":0.18,"FLFPR":0.2,"Count":3},{"Cost":0.18,"FLFPR":0.3,"Count":8},{"Cost":0.18,"FLFPR":0.4,"Count":2},{"Cost":0.18,"FLFPR":0.5,"Count":15},{"Cost":0.18,"FLFPR":0.6,"Count":10},{"Cost":0.18,"FLFPR":0.7,"Count":0},{"Cost":0.18,"FLFPR":0.8,"Count":14},{"Cost":0.18,"FLFPR":0.9,"Count":20},{"Cost":0.19,"FLFPR":0.0,"Count":9},{"Cost":0.19,"FLFPR":0.1,"Count":19},{"Cost":0.19,"FLFPR":0.2,"Count":10},{"Cost":0.19,"FLFPR":0.3,"Count":13},{"Cost":0.19,"FLFPR":0.4,"Count":8},{"Cost":0.19,"FLFPR":0.5,"Count":7},{"Cost":0.19,"FLFPR":0.6,"Count":14},{"Cost":0.19,"FLFPR":0.7,"Count":3},{"Cost":0.19,"FLFPR":0.8,"Count":10},{"Cost":0.19,"FLFPR":0.9,"Count":13},{"Cost":0.2,"FLFPR":0.0,"Count":17},{"Cost":0.2,"FLFPR":0.1,"Count":1},{"Cost":0.2,"FLFPR":0.2,"Count":9},{"Cost":0.2,"FLFPR":0.3,"Count":12},{"Cost":0.2,"FLFPR":0.4,"Count":5},{"Cost":0.2,"FLFPR":0.5,"Count":4},{"Cost":0.2,"FLFPR":0.6,"Count":3},{"Cost":0.2,"FLFPR":0.7,"Count":14},{"Cost":0.2,"FLFPR":0.8,"Count":5},{"Cost":0.2,"FLFPR":0.9,"Count":8},{"Cost":0.21,"FLFPR":0.0,"Count":1},{"Cost":0.21,"FLFPR":0.1,"Count":7},{"Cost":0.21,"FLFPR":0.2,"Count":0},{"Cost":0.21,"FLFPR":0.3,"Count":18},{"Cost":0.21,"FLFPR":0.4,"Count":1},{"Cost":0.21,"FLFPR":0.5,"Count":6},{"Cost":0.21,"FLFPR":0.6,"Count":6},{"Cost":0.21,"FLFPR":0.7,"Count":10},{"Cost":0.21,"FLFPR":0.8,"Count":5},{"Cost":0.21,"FLFPR":0.9,"Count":1},{"Cost":0.22,"FLFPR":0.0,"Count":0},{"Cost":0.22,"FLFPR":0.1,"Count":2},{"Cost":0.22,"FLFPR":0.2,"Count":14},{"Cost":0.22,"FLFPR":0.3,"Count":11},{"Cost":0.22,"FLFPR":0.4,"Count":1},{"Cost":0.22,"FLFPR":0.5,"Count":6},{"Cost":0.22,"FLFPR":0.6,"Count":3},{"Cost":0.22,"FLFPR":0.7,"Count":10},{"Cost":0.22,"FLFPR":0.8,"Count":4},{"Cost":0.22,"FLFPR":0.9,"Count":11},{"Cost":0.23,"FLFPR":0.0,"Count":6},{"Cost":0.23,"FLFPR":0.1,"Count":7},{"Cost":0.23,"FLFPR":0.2,"Count":5},{"Cost":0.23,"FLFPR":0.3,"Count":11},{"Cost":0.23,"FLFPR":0.4,"Count":14},{"Cost":0.23,"FLFPR":0.5,"Count":13},{"Cost":0.23,"FLFPR":0.6,"Count":2},{"Cost":0.23,"FLFPR":0.7,"Count":0},{"Cost":0.23,"FLFPR":0.8,"Count":5},{"Cost":0.23,"FLFPR":0.9,"Count":13},{"Cost":0.24,"FLFPR":0.0,"Count":15},{"Cost":0.24,"FLFPR":0.1,"Count":15},{"Cost":0.24,"FLFPR":0.2,"Count":0},{"Cost":0.24,"FLFPR":0.3,"Count":2},{"Cost":0.24,"FLFPR":0.4,"Count":7},{"Cost":0.24,"FLFPR":0.5,"Count":7},{"Cost":0.24,"FLFPR":0.6,"Count":4},{"Cost":0.24,"FLFPR":0.7,"Count":19},{"Cost":0.24,"FLFPR":0.8,"Count":18},{"Cost":0.24,"FLFPR":0.9,"Count":14},{"Cost":0.25,"FLFPR":0.0,"Count":13},{"Cost":0.25,"FLFPR":0.1,"Count":2},{"Cost":0.25,"FLFPR":0.2,"Count":10},{"Cost":0.25,"FLFPR":0.3,"Count":18},{"Cost":0.25,"FLFPR":0.4,"Count":12},{"Cost":0.25,"FLFPR":0.5,"Count":19},{"Cost":0.25,"FLFPR":0.6,"Count":14},{"Cost":0.25,"FLFPR":0.7,"Count":6},{"Cost":0.25,"FLFPR":0.8,"Count":15},{"Cost":0.25,"FLFPR":0.9,"Count":12},{"Cost":0.26,"FLFPR":0.0,"Count":9},{"Cost":0.26,"FLFPR":0.1,"Count":12},{"Cost":0.26,"FLFPR":0.2,"Count":12},{"Cost":0.26,"FLFPR":0.3,"Count":10},{"Cost":0.26,"FLFPR":0.4,"Count":18},{"Cost":0.26,"FLFPR":0.5,"Count":10},{"Cost":0.26,"FLFPR":0.6,"Count":11},{"Cost":0.26,"FLFPR":0.7,"Count":7},{"Cost":0.26,"FLFPR":0.8,"Count":11},{"Cost":0.26,"FLFPR":0.9,"Count":18},{"Cost":0.27,"FLFPR":0.0,"Count":3},{"Cost":0.27,"FLFPR":0.1,"Count":18},{"Cost":0.27,"FLFPR":0.2,"Count":14},{"Cost":0.27,"FLFPR":0.3,"Count":1},{"Cost":0.27,"FLFPR":0.4,"Count":1},{"Cost":0.27,"FLFPR":0.5,"Count":3},{"Cost":0.27,"FLFPR":0.6,"Count":7},{"Cost":0.27,"FLFPR":0.7,"Count":15},{"Cost":0.27,"FLFPR":0.8,"Count":16},{"Cost":0.27,"FLFPR":0.9,"Count":9},{"Cost":0.28,"FLFPR":0.0,"Count":2},{"Cost":0.28,"FLFPR":0.1,"Count":19},{"Cost":0.28,"FLFPR":0.2,"Count":6},{"Cost":0.28,"FLFPR":0.3,"Count":1},{"Cost":0.28,"FLFPR":0.4,"Count":5},{"Cost":0.28,"FLFPR":0.5,"Count":4},{"Cost":0.28,"FLFPR":0.6,"Count":7},{"Cost":0.28,"FLFPR":0.7,"Count":2},{"Cost":0.28,"FLFPR":0.8,"Count":6},{"Cost":0.28,"FLFPR":0.9,"Count":0},{"Cost":0.29,"FLFPR":0.0,"Count":13},{"Cost":0.29,"FLFPR":0.1,"Count":2},{"Cost":0.29,"FLFPR":0.2,"Count":9},{"Cost":0.29,"FLFPR":0.3,"Count":14},{"Cost":0.29,"FLFPR":0.4,"Count":10},{"Cost":0.29,"FLFPR":0.5,"Count":7},{"Cost":0.29,"FLFPR":0.6,"Count":10},{"Cost":0.29,"FLFPR":0.7,"Count":19},{"Cost":0.29,"FLFPR":0.8,"Count":14},{"Cost":0.29,"FLFPR":0.9,"Count":15},{"Cost":0.3,"FLFPR":0.0,"Count":2},{"Cost":0.3,"FLFPR":0.1,"Count":17},{"Cost":0.3,"FLFPR":0.2,"Count":0},{"Cost":0.3,"FLFPR":0.3,"Count":12},{"Cost":0.3,"FLFPR":0.4,"Count":6},{"Cost":0.3,"FLFPR":0.5,"Count":10},{"Cost":0.3,"FLFPR":0.6,"Count":9},{"Cost":0.3,"FLFPR":0.7,"Count":12},{"Cost":0.3,"FLFPR":0.8,"Count":8},{"Cost":0.3,"FLFPR":0.9,"Count":13}]
+
+        // for (let county of counties) {
+        //     console.log("county value=", county.value)
+        // };
+
+        var margin = {top: 30, right: 30, bottom: 60, left: 40},
+        width = 450 - margin.left - margin.right,
+        height = 450 - margin.top - margin.bottom;
+        
+        let svg = d3.select("#maingraphic")
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("id", "maingroup")
+            .attr("transform",
+                    "translate(" + margin.left + "," + margin.top + ")");
+
+        const customTick = (d) => `${d*100}%`;
+
+        let xScale = d3.scaleLinear()
+            .domain([0, .32])
+            .range([0, width]);
+            //.padding(0.01);
+            
+        let xAxis = svg.append("g")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(xScale).tickFormat(customTick));
+
+        let yScale = d3.scaleLinear()
+            .domain([0, 1])
+            .range([ height, 0 ]);
+            //.padding(0.01);
+            
+        let yAxis = svg.append("g")
+            //.attr("transform", "translate(" + width + ", 0)")
+            .call(d3.axisLeft(yScale).tickFormat(customTick));
+
+        let myColor = d3.scaleLinear()
+            .range(["white", "#26bce1"])
+            .domain([1,20]);
+        // const colorScale = d3.scaleSequential(d3.interpolateGnBu)
+        //     .domain([0, d3.max(counts, d => d.value)]);
+
+        let tooltip = d3.select("#maingraphic")
+            .append("div")
+            .style("opacity", 0)
+            .attr("class", "tooltip")
+            .style("background-color", "white")
+            .style("border", "solid")
+            .style("border-width", "2px")
+            .style("border-radius", "5px")
+            .style("padding", "5px")
+        
+        let mouseover = function(d) {
+            tooltip.style("opacity", 1)
+        };
+        let mousemove = function(event, d) {
+            tooltip
+            .html("The exact value of this cell is: " + `<strong>${d.Count}</strong>`) //<br> moved
+            // .style("left", (d3.mouse(this)[0]+70) + "px")
+            // .style("top", (d3.mouse(this)[1]) + "px")
+        };
+        let mouseleave = function(d) {
+            tooltip.style("opacity", 0)
+        };
+
+        svg.selectAll("rect")
+            .data(counts)
+            .join("rect")
+                .attr("class", "cell")  
+                .attr("x", d => xScale(d.Cost) + 1)
+                .attr("y", d => yScale(d.FLFPR) - 37)
+                .attr("width", xScale(.01))
+                .attr("height", yScale(.9))
+                .style("fill", function(d) {return myColor(d.Count)})
+            .on("mouseover", mouseover)
+            .on("mousemove", mousemove)
+            .on("mouseleave", mouseleave);
+    </script>
+</section>
+
+</body>
+</html>
