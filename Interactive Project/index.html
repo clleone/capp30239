@@ -9,6 +9,9 @@
       header {
         font: 1rem "Helvetica", sans-serif;
       }
+      subheader {
+        font: .75rem "Helvetica", sans-serif;
+      }
       .tooltip {
         font: 1rem "Helvetica", sans-serif;
       }
@@ -17,9 +20,14 @@
 </head>
 <body>
 
+<div id="header">
 <header>
     <h1>Childcare Cost and Female Labor Force Participation</h1>
 </header>
+<subheader>
+    <h2>**Currently using mock data.</h2>
+</subheader>
+</div>
 
 <section>
     <div class="svg-output" id="maingraphic"></div>
@@ -104,7 +112,7 @@
                 .style("fill", function(d) {return myColor(d.Count)})
             .on("mouseover", mouseover)
             .on("mousemove", mousemove)
-            .on("mouseleave", mouseleave);
+            .on("mouseleave", mouseleave)
     </script>
 </section>
 

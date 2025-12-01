@@ -52,7 +52,7 @@ it, and that would mean having to make ~60 minicsvs or json.
 
 ## Walk Through
 
-![Viz vision](capp30239\Interactive Project\Milestones\viz-vision.jpg)
+![Viz vision](viz-vision.jpg)
 
 ## Questions
 
