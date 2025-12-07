@@ -11,8 +11,9 @@
 <body>
 
 <!-- Create an element where the map will take place -->
+<div>
 <div id="maingraphic">
-<svg id="my_dataviz" width="750" height="500"></svg>
+<svg id="hexbinmap" width="750" height="500"></svg>
 </div>
 
 <div>
@@ -23,11 +24,16 @@
     <!-- Add options for all 8 cost columns + MHI -->
 </select>
 </div>
+</div>
+
+<div>
+    <svg id="barchart"></svg>
+</div>
 
 <section>
 <script>
 // The svg
-const svg = d3.select("svg"),
+const svg = d3.select("#hexbinmap"),
     width = +svg.attr("width"),
     height = +svg.attr("height");
 
@@ -58,8 +64,15 @@ let mouseover = function(event, d) {
 let mousemove = function(event, d) {
     //console.log(event)
     const childPop = 72500000
+    if (currentDataKey === 'default') {
+        message = "This cell represents " + `<strong>${((d.properties.CHILD_POP)/725000).toFixed(2)}%</strong>` + " of American children.";
+    } else if (currentDataKey === 'R_Rank') {
+        message = "Rank:" + `${d.properties.R_Rank}`;
+    } else {
+        message = "Rank:" + `${d.properties.Qual_Rank}`
+    }
     tooltip
-    .html("This cell represents " + `<strong>${((d.properties.CHILD_POP)/childPop*100).toFixed(2)}%</strong>` + " of American children.") //<br> moved
+    .html(message) //<br> moved
     .style("left", (event.pageX + 10) + "px")
     .style("top", (event.pageY - 10) + "px")
     //console.log(tooltip)
@@ -67,6 +80,10 @@ let mousemove = function(event, d) {
 let mouseleave = function(d) {
     tooltip.style("opacity", 0)
 };
+
+let clickDash = function(event, d) {
+
+}
 
 let currentDataKey = 'default';
 
@@ -88,14 +105,19 @@ function initializeMap(data) {
             maxVal = d3.max(newValues);
         };
 
+        domvals = [minVal, maxVal]
+
         colorScale.domain([minVal, maxVal]);
 
         if (newKey === 'default') {
-            colorScale.range(["#5f68b0", "#5f68b0"]);
+            colors = ["#5f68b0", "#5f68b0"]
+            colorScale.range(colors);
         } else if (newKey === 'R_Rank') {
-            colorScale.range(["#76ded5", "#1c5fed"]);
+            colors = ["#1c5fed", "#8de3db"]
+            colorScale.range(colors);
         } else {
-            colorScale.range(["#db7fa3", "#8618ad"]);
+            colors = ["#8618ad", "#f5b3cd"]
+            colorScale.range(colors);
         }
 
         // Select all hexagon paths and update the fill style
@@ -116,25 +138,6 @@ function initializeMap(data) {
     }
 
     const colorScale = d3.scaleLinear()
-
-//     function getMaxMin(currentDataKey, data) {
-    
-//     if (currentDataKey === 'default') {
-//         const minVal = 1;
-//         const maxVal = 1;
-//         return [minVal, maxVal];
-//     } else {
-//         const initialValues = data.map(d => d.properties[currentDataKey]);
-//         const minVal = d3.min(initialValues);
-//         const maxVal = d3.max(initialValues);
-//         return [minVal, maxVal];
-//     }
-// }
-
-    // let minVal = 2
-    // let maxVal = 2
-
-    // colorScale.domain([minVal, maxVal]);
     
     // Draw the map
     svg.append("g")
@@ -188,6 +191,8 @@ d3.json("https://raw.githubusercontent.com/clleone/capp30239/refs/heads/main/Int
     console.log("Inspecting properties of the first feature:", data.features[0].properties);
     initializeMap(data.features);
 })
+
+
 </script>
 </section>
 
