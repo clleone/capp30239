@@ -11,7 +11,18 @@
 <body>
 
 <!-- Create an element where the map will take place -->
+<div id="maingraphic">
 <svg id="my_dataviz" width="750" height="500"></svg>
+</div>
+
+<div>
+<select id="dropdown-selector">
+    <option value="default">--</option>
+    <option value="R_Rank">Regulatory Restrictiveness</option>
+    <option value="Qual_Rank">Childcare Center Quality</option>
+    <!-- Add options for all 8 cost columns + MHI -->
+</select>
+</div>
 
 <section>
 <script>
@@ -23,29 +34,126 @@ const svg = d3.select("svg"),
 // Map and projection
 const projection = d3.geoMercator()
     .scale(500) // This is the zoom
-    .translate([1200, 650]); // You have to play with these values to center your map
+    .translate([1250, 650]); // You have to play with these values to center your map
 
 // Path generator
 const path = d3.geoPath()
     .projection(projection)
 
-// Load external data and boot
-d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/us_states_hexgrid.geojson.json").then( function(data){
+let tooltip = d3.select("#maingraphic")
+    .append("div")
+    .style("opacity", 0)
+    .attr("class", "tooltip")
+    .style("background-color", "white")
+    .style("border", "solid")
+    .style("border-width", "2px")
+    .style("border-radius", "5px")
+    .style("padding", "5px")
+    .style("font-size", 10)
+    .style("position", "absolute");
 
-  // Draw the map
-  svg.append("g")
+let mouseover = function(event, d) {
+    tooltip.style("opacity", 1)
+};
+let mousemove = function(event, d) {
+    //console.log(event)
+    tooltip
+    .html("This cell represents " + `<strong>${(d.properties.CHILD_POP)}</strong>` + " children.") //<br> moved
+    .style("left", (event.pageX + 10) + "px")
+    .style("top", (event.pageY - 10) + "px")
+    //console.log(tooltip)
+};
+let mouseleave = function(d) {
+    tooltip.style("opacity", 0)
+};
+
+
+let currentDataKey = 'R_Rank';
+
+function initializeMap(data) {
+    // Determine initial domain using the default key
+    // 2. The update function is much cleaner now:
+    function updateMapColors(newKey, data) {
+        currentDataKey = newKey;
+
+        //console.log(d.properties[currentDataKey])
+        // Recalculate color domain based on the properties of the selected key
+        
+        if (currentDataKey === 'default') {
+            const minVal = 1;
+            const maxVal = 1;
+        } else {
+            const newValues = data.map(d => d.properties[currentDataKey]);
+            const minVal = d3.min(newValues);
+            const maxVal = d3.max(newValues);
+        }
+
+        colorScale.domain([minVal, maxVal]);
+
+        if (currentDataKey === 'default') {
+            colorScale.range(["#5f68b0", "#5f68b0"]);
+        } else if (currentDataKey === 'R_Rank') {
+            colorScale.range(["#76ded5", "#1c5fed"]);
+        } else {
+            colorScale.range(["#db7fa3", "#c42bc2"]);
+        }
+        
+
+        // Select all hexagon paths and update the fill style
+        d3.selectAll(".state_hex")
+            .transition() // Smooth transition effect
+            .duration(500)
+            .style("fill", function(d) {
+                // Access the value directly from the feature properties
+                const value = d.properties[currentDataKey]; 
+                console.log(colorScale(value));
+                return value ? colorScale(value) : "#a8adaa"; // Return color or grey fallback
+            });
+            
+        // Update any legends you have here
+    }
+
+    const colorScale = d3.scaleLinear()
+
+    function getMaxMin(currentDataKey, data) {
+    
+    if (currentDataKey === 'default') {
+        const minVal = 1;
+        const maxVal = 1;
+        return [minVal, maxVal];
+    } else {
+        const initialValues = data.map(d => d.properties[currentDataKey]);
+        const minVal = d3.min(initialValues);
+        const maxVal = d3.max(initialValues);
+        return [minVal, maxVal];
+    }
+}
+    let [minVal, maxVal] = getMaxMin(currentDataKey, data)
+
+    colorScale.domain([minVal, maxVal]);
+    
+    // Draw the map
+    svg.append("g")
+      .attr("class", "hexagons")
       .selectAll("path")
-      .data(data.features)
+      .data(data)
       .join("path")
-          .attr("fill", "#69a2a2")
+          .attr("class", "state_hex")
+          .attr("id", function(d, i) {return d.properties.STATE_NAME})
+        //   .attr("fill", updateMapColors(currentDataKey, data))
           .attr("d", path)
           .attr("stroke", "white")
+          .on("mouseover", mouseover)
+          .on("mousemove", mousemove)
+          .on("mouseleave", mouseleave);
 
-  // Add the labels
-  svg.append("g")
+    // Add the labels
+    svg.append("g")
+      .attr("class", "state_labels")
       .selectAll("labels")
-      .data(data.features)
+      .data(data)
       .join("text")
+        .attr("class", "state_abbr")
         .attr("x", function(d){return path.centroid(d)[0]})
         .attr("y", function(d){return path.centroid(d)[1]})
         .text(function(d){ return d.properties.iso3166_2})
@@ -53,6 +161,28 @@ d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/u
         .attr("alignment-baseline", "central")
         .style("font-size", 11)
         .style("fill", "white")
+
+    // ... use the update function to set initial colors
+    updateMapColors(currentDataKey, data); 
+
+    d3.select("#dropdown-selector")
+        .on("change", function() {
+        const selectedValue = d3.select(this).property("value");
+        updateMapColors(selectedValue, data);
+    });
+}
+
+
+// d3.select("#dropdown-selector")
+//   .on("change", function() {
+//     const selectedValue = d3.select(this).property("value");
+//     updateMapColors(selectedValue, data);
+//   });
+
+// Load external data and boot
+d3.json("https://raw.githubusercontent.com/clleone/capp30239/refs/heads/main/Interactive%20Project/test_gj.geojson").then(function(data){
+    console.log("Inspecting properties of the first feature:", data.features[0].properties);
+    initializeMap(data.features);
 })
 </script>
 </section>
