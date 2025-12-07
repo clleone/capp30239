@@ -111,10 +111,10 @@ function getCostKeys(type) {
     }
 ;}
 
-const detailBarContainer = d3.select("#center-bar-svg") // Or select an existing div
-    .attr("width", 180)
-    .attr("height", 410)
-    .attr("viewBox", "0 0 160 410"); 
+// const detailBarContainer = d3.select("#center-bar-svg") // Or select an existing div
+//     .attr("width", 180)
+//     .attr("height", 410)
+//     .attr("viewBox", "0 0 160 410"); 
 
 const dashHeader = d3.select("#Dash-header")
 
@@ -129,6 +129,16 @@ function renderDetailChart(stateDataProperties, stateName, type, id) {
         .attr("viewBox", "0 0 160 410");
 
     detailBarContainer.selectAll("*").remove();
+
+    noDataStates = ["Arkansas", "New Mexico", "Vermont", "Indiana"]
+
+    if (noDataStates.includes(stateName)) {
+        detailBarContainer
+            .append("text")
+            .attr("text-anchor", "middle")
+            .text("No pricing data available for " + `${stateName}.`)
+            return;
+    }
 
     const [costKeys, ageLabels, typeLabels] = getCostKeys(type)
 
@@ -163,7 +173,6 @@ function renderDetailChart(stateDataProperties, stateName, type, id) {
 
     // Add Title
     detailBarContainer
-
         .append("text")
         .attr("text-anchor", "middle")
         .attr("x", 80)
