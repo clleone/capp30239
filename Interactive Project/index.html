@@ -29,6 +29,7 @@
 <h3 id="Dash-header"></h3>
 <div>
     <svg id="center-bar-svg"></svg>
+    <svg id="family-bar-svg"></svg>>
 </div>
 
 <section>
@@ -117,11 +118,16 @@ const detailBarContainer = d3.select("#center-bar-svg") // Or select an existing
 
 const dashHeader = d3.select("#Dash-header")
 
-function renderDetailChart(stateDataProperties, stateName, type) {
+function renderDetailChart(stateDataProperties, stateName, type, id) {
     // Clear previous chart elements
     dashHeader
     .html(`${stateName}` + " at a Glance"
     )
+    const detailBarContainer = d3.select(id) // Or select an existing div
+        .attr("width", 180)
+        .attr("height", 410)
+        .attr("viewBox", "0 0 160 410");
+
     detailBarContainer.selectAll("*").remove();
 
     const [costKeys, ageLabels, typeLabels] = getCostKeys(type)
@@ -252,8 +258,8 @@ function initializeMap(data) {
           .attr("d", path)
           .attr("stroke", "white")
           .on("click", function(event, d) {
-                renderDetailChart(d.properties, d.properties.STATE_NAME, 'CENTER');
-                //renderDetailChart(d.properties, d.properties.STATE_NAME, 'FAMILY');
+                renderDetailChart(d.properties, d.properties.STATE_NAME, 'CENTER', "#center-bar-svg");
+                renderDetailChart(d.properties, d.properties.STATE_NAME, 'FAMILY', "#family-bar-svg");
             })
           .on("mouseover", mouseover)
           .on("mousemove", mousemove)
@@ -275,7 +281,8 @@ function initializeMap(data) {
         .style("font-size", 11)
         .style("fill", "white")
         .on("click", function(event, d) {
-            renderDetailChart(d.properties, d.properties.STATE_NAME, 'CENTER');
+            renderDetailChart(d.properties, d.properties.STATE_NAME, 'CENTER', "#center-bar-svg");
+            renderDetailChart(d.properties, d.properties.STATE_NAME, 'FAMILY', "#family-bar-svg");
         })
         .on("mouseover", mouseover)
         .on("mousemove", mousemove)
