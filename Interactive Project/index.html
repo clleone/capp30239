@@ -57,8 +57,9 @@ let mouseover = function(event, d) {
 };
 let mousemove = function(event, d) {
     //console.log(event)
+    const childPop = 72500000
     tooltip
-    .html("This cell represents " + `<strong>${(d.properties.CHILD_POP)}</strong>` + " children.") //<br> moved
+    .html("This cell represents " + `<strong>${((d.properties.CHILD_POP)/childPop*100).toFixed(2)}%</strong>` + " of American children.") //<br> moved
     .style("left", (event.pageX + 10) + "px")
     .style("top", (event.pageY - 10) + "px")
     //console.log(tooltip)
@@ -67,22 +68,16 @@ let mouseleave = function(d) {
     tooltip.style("opacity", 0)
 };
 
-
 let currentDataKey = 'default';
 
 function initializeMap(data) {
     // Determine initial domain using the default key
     // 2. The update function is much cleaner now:
     function updateMapColors(newKey, data) {
-        console.log("key before", currentDataKey)
         currentDataKey = newKey;
-        console.log("key after", currentDataKey)
 
         //console.log(d.properties[currentDataKey])
         // Recalculate color domain based on the properties of the selected key
-        let minVal = 1
-        let maxVal = 1
-        console.log("before assignment", minVal, maxVal)
         
         if (currentDataKey === 'default') {
             minVal = 1;
@@ -92,8 +87,6 @@ function initializeMap(data) {
             minVal = d3.min(newValues);
             maxVal = d3.max(newValues);
         };
-
-        console.log('after', minVal, maxVal)
 
         colorScale.domain([minVal, maxVal]);
 
@@ -151,7 +144,7 @@ function initializeMap(data) {
       .join("path")
           .attr("class", "state_hex")
           .attr("id", function(d, i) {return d.properties.STATE_NAME})
-        //   .attr("fill", updateMapColors(currentDataKey, data))
+          .attr("fill", "#5f68b0")
           .attr("d", path)
           .attr("stroke", "white")
           .on("mouseover", mouseover)
