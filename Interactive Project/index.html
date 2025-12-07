@@ -108,8 +108,8 @@ function getCostKeys(type) {
 ;}
 
 const detailBarContainer = d3.select("#bar-svg") // Or select an existing div
-    .attr("width", 200)
-    .attr("height", 150); 
+    .attr("width", 150)
+    .attr("height", 250); 
 
 function renderDetailChart(stateDataProperties, stateName, type) {
     // Clear previous chart elements
@@ -126,20 +126,28 @@ function renderDetailChart(stateDataProperties, stateName, type) {
     // Define Scales (adjust domains/ranges as necessary)
     const xScale = d3.scaleBand()
         .domain(chartData.map(d => d.label))
-        .range([0, 180]) // within chart container
+        .range([0, 130]) // within chart container
         .padding(0.1);
 
-    // detailBarChart.append("g")
-    //     .attr("class", "bar-y-axis")
-    //     .call(d3.axisLeft(y));
+    // detailBarContainer.append("g")
+    //     .attr("class", "bar-x-axis")
+    //     .attr("transform", `translate(0,${250})`)
+    //     .call(d3.axisBottom(xScale))
+    //     .selectAll("text")
+    //     .attr("transform", "translate(-10,0)rotate(-45)")
+    //     .style("text-anchor", "end");
 
     const yScale = d3.scaleLinear()
         .domain([0, 0.26]) // e.g. Max cost share 30%
-        .range([100, 0]); // within chart container
+        .range([200, 0]); // within chart container
+
+    // detailBarChart.append("g")
+    //     .attr("class", "bar-y-axis")
+    //     .call(d3.axisLeft(yScale));
 
     // Add Title
     detailBarContainer.append("text")
-        .attr("x", 100)
+        .attr("x", 75)
         .attr("y", 20)
         .attr("text-anchor", "middle")
         .text(`Costs for ${stateName}`);
@@ -152,7 +160,7 @@ function renderDetailChart(stateDataProperties, stateName, type) {
         .attr("x", d => xScale(d.label) + 10) // Offset for margin
         .attr("y", d => yScale(d.value) + 40) // Offset for title/margin
         .attr("width", xScale.bandwidth())
-        .attr("height", d => 100 - yScale(d.value)) // Assuming 100px main chart area height
+        .attr("height", d => 250 - yScale(d.value)) // Assuming 100px main chart area height
         .attr("fill", "steelblue");
         
     // (Optional: Add axes using d3.axisBottom and d3.axisLeft)
