@@ -68,36 +68,42 @@ let mouseleave = function(d) {
 };
 
 
-let currentDataKey = 'R_Rank';
+let currentDataKey = 'default';
 
 function initializeMap(data) {
     // Determine initial domain using the default key
     // 2. The update function is much cleaner now:
     function updateMapColors(newKey, data) {
+        console.log("key before", currentDataKey)
         currentDataKey = newKey;
+        console.log("key after", currentDataKey)
 
         //console.log(d.properties[currentDataKey])
         // Recalculate color domain based on the properties of the selected key
+        let minVal = 1
+        let maxVal = 1
+        console.log("before assignment", minVal, maxVal)
         
         if (currentDataKey === 'default') {
-            const minVal = 1;
-            const maxVal = 1;
+            minVal = 1;
+            maxVal = 3;
         } else {
-            const newValues = data.map(d => d.properties[currentDataKey]);
-            const minVal = d3.min(newValues);
-            const maxVal = d3.max(newValues);
-        }
+            let newValues = data.map(d => d.properties[currentDataKey]);
+            minVal = d3.min(newValues);
+            maxVal = d3.max(newValues);
+        };
+
+        console.log('after', minVal, maxVal)
 
         colorScale.domain([minVal, maxVal]);
 
-        if (currentDataKey === 'default') {
+        if (newKey === 'default') {
             colorScale.range(["#5f68b0", "#5f68b0"]);
-        } else if (currentDataKey === 'R_Rank') {
+        } else if (newKey === 'R_Rank') {
             colorScale.range(["#76ded5", "#1c5fed"]);
         } else {
-            colorScale.range(["#db7fa3", "#c42bc2"]);
+            colorScale.range(["#db7fa3", "#8618ad"]);
         }
-        
 
         // Select all hexagon paths and update the fill style
         d3.selectAll(".state_hex")
@@ -105,9 +111,12 @@ function initializeMap(data) {
             .duration(500)
             .style("fill", function(d) {
                 // Access the value directly from the feature properties
-                const value = d.properties[currentDataKey]; 
-                console.log(colorScale(value));
-                return value ? colorScale(value) : "#a8adaa"; // Return color or grey fallback
+                if (newKey === 'default') {
+                    return "#5f68b0";
+                } else {
+                    const value = d.properties[currentDataKey];
+                    return value ? colorScale(value) : "#a8adaa"; // Return color or grey fallback
+                };
             });
             
         // Update any legends you have here
@@ -115,22 +124,24 @@ function initializeMap(data) {
 
     const colorScale = d3.scaleLinear()
 
-    function getMaxMin(currentDataKey, data) {
+//     function getMaxMin(currentDataKey, data) {
     
-    if (currentDataKey === 'default') {
-        const minVal = 1;
-        const maxVal = 1;
-        return [minVal, maxVal];
-    } else {
-        const initialValues = data.map(d => d.properties[currentDataKey]);
-        const minVal = d3.min(initialValues);
-        const maxVal = d3.max(initialValues);
-        return [minVal, maxVal];
-    }
-}
-    let [minVal, maxVal] = getMaxMin(currentDataKey, data)
+//     if (currentDataKey === 'default') {
+//         const minVal = 1;
+//         const maxVal = 1;
+//         return [minVal, maxVal];
+//     } else {
+//         const initialValues = data.map(d => d.properties[currentDataKey]);
+//         const minVal = d3.min(initialValues);
+//         const maxVal = d3.max(initialValues);
+//         return [minVal, maxVal];
+//     }
+// }
 
-    colorScale.domain([minVal, maxVal]);
+    // let minVal = 2
+    // let maxVal = 2
+
+    // colorScale.domain([minVal, maxVal]);
     
     // Draw the map
     svg.append("g")
