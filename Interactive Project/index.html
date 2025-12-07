@@ -26,8 +26,9 @@
 </div>
 </div>
 
+<h3 id="Dash-header"></h3>
 <div>
-    <svg id="bar-svg"></svg>
+    <svg id="center-bar-svg"></svg>
 </div>
 
 <section>
@@ -60,6 +61,7 @@ let tooltip = d3.select("#maingraphic")
 
 let mouseover = function(event, d) {
     tooltip.style("opacity", 1)
+    d3.select(this).style("cursor", "pointer");
 };
 let mousemove = function(event, d) {
     //console.log(event)
@@ -79,6 +81,7 @@ let mousemove = function(event, d) {
 };
 let mouseleave = function(d) {
     tooltip.style("opacity", 0)
+    d3.select(this).style("cursor", "default");
 };
 
 let clickDash = function(event, d) {
@@ -95,27 +98,33 @@ function getCostKeys(type) {
         "ADJ_CENTER_SCHOOLAGE_COST"], {"ADJ_CENTER_INFANT_COST":"Infant", 
         "ADJ_CENTER_TODDLER_COST":"Toddler", 
         "ADJ_CENTER_PRESCHOOL_COST":"Preschool", 
-        "ADJ_CENTER_SCHOOLAGE_COST":"School Age"}];
+        "ADJ_CENTER_SCHOOLAGE_COST":"School Age"}, {"CENTER": "Center"}];
     } else {
         return [["ADJ_HOME_INFANT_COST", 
-        "ADJ_HOME_TODDLER_COST", 
-        "ADJ_HOME_PRESCHOOL_COST", 
-        "ADJ_HOME_SCHOOLAGE_COST"], {"ADJ_HOME_INFANT_COST":"Infant", 
-        "ADJ_HOME_TODDLER_COST":"Toddler", 
-        "ADJ_HOME_PRESCHOOL_COST":"Preschool", 
-        "ADJ_HOME_SCHOOLAGE_COST":"School Age"}];
+        "ADJ_FAMILY_TODDLER_COST", 
+        "ADJ_FAMILY_PRESCHOOL_COST", 
+        "ADJ_FAMILY_SCHOOLAGE_COST"], {"ADJ_FAMILY_INFANT_COST":"Infant", 
+        "ADJ_FAMILY_TODDLER_COST":"Toddler", 
+        "ADJ_FAMILY_PRESCHOOL_COST":"Preschool", 
+        "ADJ_FAMILY_SCHOOLAGE_COST":"School Age"}, {"FAMILY": "Family"}];
     }
 ;}
 
-const detailBarContainer = d3.select("#bar-svg") // Or select an existing div
-    .attr("width", 150)
-    .attr("height", 250); 
+const detailBarContainer = d3.select("#center-bar-svg") // Or select an existing div
+    .attr("width", 180)
+    .attr("height", 410)
+    .attr("viewBox", "0 0 160 410"); 
+
+const dashHeader = d3.select("#Dash-header")
 
 function renderDetailChart(stateDataProperties, stateName, type) {
     // Clear previous chart elements
+    dashHeader
+    .html(`${stateName}` + " at a Glance"
+    )
     detailBarContainer.selectAll("*").remove();
 
-    const [costKeys, ageLabels] = getCostKeys(type)
+    const [costKeys, ageLabels, typeLabels] = getCostKeys(type)
 
     // Transform the properties object into an array for D3
     const chartData = costKeys.map(key => ({ 
@@ -126,31 +135,44 @@ function renderDetailChart(stateDataProperties, stateName, type) {
     // Define Scales (adjust domains/ranges as necessary)
     const xScale = d3.scaleBand()
         .domain(chartData.map(d => d.label))
-        .range([0, 130]) // within chart container
+        .range([0, 140]) // within chart container
         .padding(0.1);
 
-    // detailBarContainer.append("g")
-    //     .attr("class", "bar-x-axis")
-    //     .attr("transform", `translate(0,${250})`)
-    //     .call(d3.axisBottom(xScale))
-    //     .selectAll("text")
-    //     .attr("transform", "translate(-10,0)rotate(-45)")
-    //     .style("text-anchor", "end");
+    detailBarContainer.append("g")
+        .attr("class", "bar-x-axis")
+        .attr("transform", `translate(10,${360})`)
+        .call(d3.axisBottom(xScale))
+        .selectAll("text")
+        .attr("transform", "translate(-10,0)rotate(-45)")
+        .style("text-anchor", "end");
 
     const yScale = d3.scaleLinear()
         .domain([0, 0.26]) // e.g. Max cost share 30%
-        .range([200, 0]); // within chart container
+        .range([360, 70]); // within chart container
 
-    // detailBarChart.append("g")
-    //     .attr("class", "bar-y-axis")
-    //     .call(d3.axisLeft(yScale));
+    detailBarContainer.append("g")
+        .attr("class", "bar-y-axis")
+        .call(d3.axisLeft(yScale))
+        .attr("transform", `translate(10,0)`);
 
     // Add Title
-    detailBarContainer.append("text")
-        .attr("x", 75)
-        .attr("y", 20)
+    detailBarContainer
+
+        .append("text")
         .attr("text-anchor", "middle")
-        .text(`Costs for ${stateName}`);
+        .attr("x", 80)
+        .attr("y", 20)
+        .append("tspan")
+        .text("% of Median Income Spent")
+        .attr("x", 80) // Set x-coordinate for the first line
+        .append("tspan")
+        .attr("x", 80) // Set x-coordinate for subsequent lines to align them
+        .attr("dy", "1.2em") // Offset the y-coordinate for the next line
+        .text("to Send One Child to " + `${typeLabels[type]}`)
+        .append("tspan")
+        .attr("x", 80)
+        .attr("dy", "1.2em")
+        .text("Daycare in " + `${stateName}`);
 
     // Draw the bars
     detailBarContainer.selectAll(".detail-bar")
@@ -158,10 +180,10 @@ function renderDetailChart(stateDataProperties, stateName, type) {
         .enter().append("rect")
         .attr("class", "detail-bar")
         .attr("x", d => xScale(d.label) + 10) // Offset for margin
-        .attr("y", d => yScale(d.value) + 40) // Offset for title/margin
+        .attr("y", d => yScale(d.value)) // Offset for title/margin
         .attr("width", xScale.bandwidth())
-        .attr("height", d => 250 - yScale(d.value)) // Assuming 100px main chart area height
-        .attr("fill", "steelblue");
+        .attr("height", d => 360 - yScale(d.value)) // Assuming 100px main chart area height
+        .attr("fill", "#5f68b0");
         
     // (Optional: Add axes using d3.axisBottom and d3.axisLeft)
 }
@@ -231,6 +253,7 @@ function initializeMap(data) {
           .attr("stroke", "white")
           .on("click", function(event, d) {
                 renderDetailChart(d.properties, d.properties.STATE_NAME, 'CENTER');
+                //renderDetailChart(d.properties, d.properties.STATE_NAME, 'FAMILY');
             })
           .on("mouseover", mouseover)
           .on("mousemove", mousemove)
@@ -243,6 +266,7 @@ function initializeMap(data) {
       .data(data)
       .join("text")
         .attr("class", "state_abbr")
+        .attr("user-select", "none")
         .attr("x", function(d){return path.centroid(d)[0]})
         .attr("y", function(d){return path.centroid(d)[1]})
         .text(function(d){ return d.properties.iso3166_2})
@@ -250,6 +274,12 @@ function initializeMap(data) {
         .attr("alignment-baseline", "central")
         .style("font-size", 11)
         .style("fill", "white")
+        .on("click", function(event, d) {
+            renderDetailChart(d.properties, d.properties.STATE_NAME, 'CENTER');
+        })
+        .on("mouseover", mouseover)
+        .on("mousemove", mousemove)
+        .on("mouseleave", mouseleave);
 
     // ... use the update function to set initial colors
     updateMapColors(currentDataKey, data); 
@@ -260,78 +290,6 @@ function initializeMap(data) {
         updateMapColors(selectedValue, data);
     });
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// // barchart let's gooo
-// const margin = {top: 10, right: 30, bottom: 90, left: 40},
-//     bwidth = 460 - margin.left - margin.right,
-//     bheight = 450 - margin.top - margin.bottom;
-
-// detailBarChart = d3.select("#bar-svg")
-//     .append("svg")
-//     .attr("width", bwidth + margin.left + margin.right)
-//     .attr("height", bheight + margin.top + margin.bottom)
-//     .append("g")
-//     .attr("transform", `translate(${margin.left},${margin.top})`);
-
-// const feature = { "type": "Feature", "properties": { "cartodb_id": 1219, "created_at": "2015-05-13T22:26:15Z", "updated_at": "2015-10-05T16:00:16Z", "label": "Maine", "bees": 60.5, "iso3166_2": "ME", "google_name": "Maine (United States)", "STATE_NAME": "Maine", "MHI": 69543.0, "CHILD_POP": 174583.0, "ADJ_CENTER_INFANT_COST": 0.17197992608889465, "ADJ_FAMILY_INFANT_COST": 0.13584170944595431, "ADJ_CENTER_PRESCHOOL_COST": 0.14506132896193721, "ADJ_FAMILY_PRESCHOOL_COST": 0.1121608213623226, "ADJ_CENTER_SCHOOLAGE_COST": 0.1183894856419769, "ADJ_FAMILY_SCHOOLAGE_COST": 0.11091209755115541, "ADJ_CENTER_TODDLER_COST": 0.15951512014149519, "ADJ_FAMILY_TODDLER_COST": 0.12212817968738766, "R_Rank": 10.0, "R_Index": 2.59, "Final_R_Score": 76, "Pct_Possible": 0.51, "Qual_Rank": 46 }, "geometry": { "type": "Polygon", "coordinates": [ [ [ -72.625738, 55.313204 ], [ -69.902864, 54.408434 ], [ -69.902864, 52.537442 ], [ -72.625738, 51.57081 ], [ -75.348611, 52.537442 ], [ -75.348611, 54.408434 ], [ -72.625738, 55.313204 ] ] ] } }
-
-// const data = feature.properties
-
-// //x axis
-// function getCostKeys(type) {
-//     if (type === "CENTER") {
-//         return ["ADJ_CENTER_INFANT_COST", 
-//         "ADJ_CENTER_TODDLER_COST", 
-//         "ADJ_CENTER_PRESCHOOL_COST", 
-//         "ADJ_CENTER_SCHOOLAGE_COST"];
-//     } else {
-//         return ["ADJ_HOME_INFANT_COST", 
-//         "ADJ_HOME_TODDLER_COST", 
-//         "ADJ_HOME_PRESCHOOL_COST", 
-//         "ADJ_HOME_SCHOOLAGE_COST"];
-//     }
-// ;}
-
-// const x = d3.scaleBand()
-//     .range([ 0, bwidth ])
-//     .domain(getCostKeys('CENTER'))
-//     .padding(0.2);
-
-// detailBarChart.append("g")
-//     .attr("class", "bar-x-axis")
-//     .attr("transform", `translate(0,${bheight})`)
-//     .call(d3.axisBottom(x))
-//     .selectAll("text")
-//     .attr("transform", "translate(-10,0)rotate(-45)")
-//     .style("text-anchor", "end");
-
-// //y axis
-// const y = d3.scaleLinear()
-//   .domain([0, .26])
-//   .range([ bheight, 0]);
-
-// detailBarChart.append("g")
-//   .attr("class", "bar-y-axis")
-//   .call(d3.axisLeft(y));
-
-// function xBar (d, i) {
-
-// }
 
 // // Bars
 // detailBarChart.selectAll("mybar")
