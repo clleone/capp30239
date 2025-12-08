@@ -3,20 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <title>Interactive HTML</title>
     <script src="js/d3.v7.js"></script>
     <style>
+        
+        body {
+            font-family: Roboto;
+            background-color: rgb(248, 231, 248);
+        }
+        h1 {
+            color: #2a326e;
+        }
+        subtitle {
+            font-size: 18px;
+            color: #484d71;
+        }
+        header {
+            margin-bottom: 12px;
+        }
+        .main {
+            width:fit-content;
+            display: grid;
+            place-items: center;
+            padding: 1em;
+            border-radius: 10px;
+            background-color: #ffffff;
+            box-shadow: 0px 3px 12px rgba(183, 8, 93, 0.361);
+        } 
+        .dash {
+            width:fit-content;
+            display: grid;
+            place-items: center;
+            padding: 1em;
+            border-radius: 10px;
+            background-color: #ffffff;
+            margin-left: 7px;
+            box-shadow: 0px 3px 12px rgba(107, 8, 183, 0.361);
+        }
+        .panel {
+            display: flex;
+        }
+        select {
+            width: 250px;
+            font-size: 16px; 
+            height: 40px;
+            line-height: 1.5;
+            border-radius: 10px;
+            padding-bottom: 10px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
 
 <!-- Create an element where the map will take place -->
-<div>
-<div id="maingraphic">
+<div> 
+    <header>
+        <h1>US Childcare Affordability (2022)</h1>
+        <subtitle>Here's a very nice informative subtitle to help people think about my viz.</subtitle>
+    </header>
+</div>
+
+<div class="panel">
+<div class="main">
+<div id="maingraphic" class="section">
 <svg id="hexbinmap" width="750" height="500"></svg>
 </div>
 
-<div>
+<div class="select is-multiple">
 <select id="dropdown-selector">
     <option value="default">--</option>
     <option value="R_Rank">Regulatory Restrictiveness</option>
@@ -26,11 +83,15 @@
 </div>
 </div>
 
-<h3 id="Dash-header"></h3>
-<div>
-    <svg id="center-bar-svg"></svg>
-    <svg id="family-bar-svg"></svg>
-    <svg id="dhhs-expl"></svg>
+
+<div class="dash">
+    <h3 id="Dash-header"></h3>
+    <div class="bar-group">
+        <svg id="center-bar-svg"></svg>
+        <svg id="family-bar-svg"></svg>
+        <svg id="dhhs-expl"></svg>
+    </div>
+</div>
 </div>
 
 <section>
@@ -43,7 +104,7 @@ const svg = d3.select("#hexbinmap"),
 // Map and projection
 const projection = d3.geoMercator()
     .scale(500) // This is the zoom
-    .translate([1250, 650]); // You have to play with these values to center your map
+    .translate([1210, 650]); // You have to play with these values to center your map
 
 // Path generator
 const path = d3.geoPath()
@@ -123,9 +184,9 @@ const customTick = (d) => `${parseInt(d*100)}%`;
 
 function renderExtraLine() {
     const barExtra = d3.select("#dhhs-expl")
-        .attr("width", 75)
+        .attr("width", 85)
         .attr("height", 410)
-        .attr("viewBox", "0 0 75 410");
+        .attr("viewBox", "0 0 85 410");
 
     barExtra.selectAll("*").remove();
     
@@ -137,7 +198,7 @@ function renderExtraLine() {
         .attr('class', 'dhhs-marker')
         .attr('x1', 0)
         .attr('y1', yScale(.07))
-        .attr('x2', 75)
+        .attr('x2', 85)
         .attr('y2', yScale(.07))
         .style('stroke', 'black')
         .style("stroke-dasharray", ("3, 3"))
@@ -163,6 +224,7 @@ function renderExtraLine() {
 
 function renderDetailChart(stateDataProperties, stateName, type, id) {
     // Clear previous chart elements
+
     dashHeader
     .html(`${stateName}` + " at a Glance"
     )
@@ -173,7 +235,7 @@ function renderDetailChart(stateDataProperties, stateName, type, id) {
 
     detailBarContainer.selectAll("*").remove();
 
-    noDataStates = ["Arkansas", "New Mexico", "Vermont", "Indiana", "Pennsylvania"]
+    noDataStates = ["Arkansas", "New Mexico", "Vermont", "Indiana", "Pennsylvania", "Missouri"]
 
     const [costKeys, ageLabels, typeLabels] = getCostKeys(type)
 
@@ -206,7 +268,7 @@ function renderDetailChart(stateDataProperties, stateName, type, id) {
         .call(d3.axisLeft(yScale).tickFormat(customTick))
         .attr("transform", `translate(30,0)`);
 
-    textBastardry = {"CENTER": {"text": "Cost to Send One Child", "x1":45, "x2": 95, "y":12, "sub": "of State Median"}, 
+    textBastardry = {"CENTER": {"text": "Cost to Send One Child", "x1":35, "x2": 95, "y":12, "sub": "of State Median"}, 
                     "FAMILY": {"text": "to Daycare Expressed as %", "x1":0, "x2": 0, "y":12, "sub": "Household Income"}}
 
     if (noDataStates.includes(stateName) || (stateName === "Mississippi" & type === "FAMILY")) {
@@ -368,7 +430,7 @@ function initializeMap(data) {
             colors = ["#5f68b0", "#5f68b0"]
             colorScale.range(colors);
         } else if (newKey === 'R_Rank') {
-            colors = ["#1c5fed", "#8de3db"]
+            colors = ["#1c5fed", "#8de3db"] //#43d7c8
             colorScale.range(colors);
         } else {
             colors = ["#8618ad", "#f5b3cd"]
