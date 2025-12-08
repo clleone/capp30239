@@ -89,6 +89,11 @@
         option {
             color: #2a326e;
         }
+        #citations {
+            font-size: 9px;
+            display: flex;
+            justify-content: right;
+        }
     </style>
 </head>
 <body>
@@ -97,7 +102,14 @@
 <div> 
     <header>
         <h1>US Childcare Affordability (2022)</h1>
-        <subtitle>Here's a very nice informative subtitle to help people think about my viz.</subtitle>
+        <subtitle>
+            <p>The US Department of Health and Human Services Center data represents childcare provided in 
+            commercial buildings, serving multiple groups or
+            classrooms of similarly aged children. They also collect
+            data on regulated "family" childcare homes, which care for
+            small groups of children in a residential building, such as
+            a house, apartment, or condo unit.</p>
+        </subtitle>
     </header>
 </div>
 
@@ -127,10 +139,18 @@
     </div>
     <button id="close-chart-button" class="delete">Close</button>
 </div>
+</div>
 <div id="citations">
-    2022 NCDP (Childcare Prices), WVU Knee Regulatory Research Center for Regulatory Restrictiveness Ranking, Childcare Aware of America for Childcare Center Quality Ranking
+    <blockquote>
+    Data Sources -- 2022 NCDP 
+    <a href="https://www.dol.gov/agencies/wb/topics/featured-childcare">(Childcare Prices)</a>
+    , WVU Knee Regulatory Research Center 
+    <a href="https://csorwvu.com/childcare_regulation_index_1/">(Regulatory Restrictiveness Ranking)</a>
+    , Childcare Aware of America 
+    <a href="https://info.childcareaware.org/hubfs/wecandobetter_20rankings2020041013(1).pdf">(Childcare Center Quality Ranking)</a>
+    </blockquote>
 </div>
-</div>
+
 
 <section>
 <script>
@@ -416,7 +436,8 @@ function renderDetailChart(stateDataProperties, stateName, type, id) {
                 .attr('y2', yScale(.07))
                 .style('stroke', 'black')
                 .style("stroke-dasharray", ("3, 3"))
-                .attr("stroke-width", 2);
+                .attr("stroke-width", 2)
+                .style('fill', "#2a326e");
             
             extraLine = d3.select("#dhhs-expl")
                 .style("visibility", "visible");
@@ -496,6 +517,7 @@ function renderDetailChart(stateDataProperties, stateName, type, id) {
         .attr('y2', yScale(.07))
         .style('stroke', 'black')
         .style("stroke-dasharray", ("3, 3"))
+        .style('fill', "#2a326e")
         .attr("stroke-width", 2);
         
     // (Optional: Add axes using d3.axisBottom and d3.axisLeft)
