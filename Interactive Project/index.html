@@ -126,6 +126,8 @@ function renderExtraLine() {
         .attr("width", 75)
         .attr("height", 410)
         .attr("viewBox", "0 0 75 410");
+
+    barExtra.selectAll("*").remove();
     
     const yScale = d3.scaleLinear()
         .domain([0, 0.26]) // e.g. Max cost share 30%
@@ -204,20 +206,86 @@ function renderDetailChart(stateDataProperties, stateName, type, id) {
         .call(d3.axisLeft(yScale).tickFormat(customTick))
         .attr("transform", `translate(30,0)`);
 
-    if (noDataStates.includes(stateName)) {
+    textBastardry = {"CENTER": {"text": "Cost to Send One Child", "x1":45, "x2": 95, "y":12, "sub": "of State Median"}, 
+                    "FAMILY": {"text": "to Daycare Expressed as %", "x1":0, "x2": 0, "y":12, "sub": "Household Income"}}
+
+    if (noDataStates.includes(stateName) || (stateName === "Mississippi" & type === "FAMILY")) {
+        detailBarContainer
+            .append("circle")
+            .attr("cx", 110)
+            .attr("cy", 190)
+            .attr("r", 0)
+            .style("fill", "rgb(0, 0, 0)")
+            .style("opacity", .1)
+            // .append("circle")
+            // .attr("cx", 110)
+            // .attr("cy", 190)
+            // .attr("r", 40)
+            // .style("fill", "rgb(0, 0, 0)")
+            // .style("opacity", .1)
+            // .append("circle")
+            // .attr("cx", 110)
+            // .attr("cy", 190)
+            // .attr("r", 20)
+            // .style("fill", "rgb(0, 0, 0)")
+            // .style("opacity", .1)
+        
+        detailBarContainer.selectAll("circle")
+            .transition()
+            .duration(800)
+            .attr("r", 60)
+        
+
         detailBarContainer
             .append("text")
             .attr("text-anchor", "middle")
-            .attr("x", 40)
-            .attr("y", 345)
-            .text("No pricing data available for " + `${stateName}.`);
-        
-        extraLine = d3.select("#dhhs-expl")
-            .style("display", "none")
-    } else {
+            .attr("x", 110)
+            .attr("y", 180)
+            .append("tspan")
+            .text("No pricing data")
+            .attr("x", 110) // Set x-coordinate for the first line
+            .append("tspan")
+            .attr("x", 110) // Set x-coordinate for subsequent lines to align them
+            .attr("dy", "1.2em") // Offset the y-coordinate for the next line
+            .text("available for")
+            .append("tspan")
+            .attr("x", 110)
+            .attr("dy", "1.2em")
+            .text(`${stateName}.`);
+    
+        if (stateName === "Mississippi") {
+            detailBarContainer
+                .append("text")
+                .attr("class", "bad-text-title")
+                .attr("x", textBastardry[type]["x1"])
+                .attr("y", textBastardry[type]["y"])
+                .append("tspan")
+                .text(`${textBastardry[type]["text"]}`)
+                .attr("x", textBastardry[type]["x1"])
+                .append("tspan")
+                .attr("x", textBastardry[type]["x2"])
+                .attr("dy", "1.2em")
+                .text(`${textBastardry[type]["sub"]}`)
 
-    textBastardry = {"CENTER": {"text": "Cost to Send One Child", "x1":45, "x2": 95, "y":12, "sub": "of State Median"}, 
-    "FAMILY": {"text": "to Daycare Expressed as %", "x1":0, "x2": 0, "y":12, "sub": "Household Income"}}
+            detailBarContainer.append("line")
+                .attr('class', 'dhhs-marker')
+                .attr('x1', 0)
+                .attr('y1', yScale(.07))
+                .attr('x2', 200)
+                .attr('y2', yScale(.07))
+                .style('stroke', 'black')
+                .style("stroke-dasharray", ("3, 3"))
+                .attr("stroke-width", 2);
+            
+            extraLine = d3.select("#dhhs-expl")
+                .style("visibility", "visible");
+        } else {
+        extraLine = d3.select("#dhhs-expl")
+            .style("visibility", "hidden");}
+    } else {
+    
+    extraLine = d3.select("#dhhs-expl")
+            .style("visibility", "visible")
 
     //bad title solution
     detailBarContainer
