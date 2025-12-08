@@ -127,6 +127,9 @@
     </div>
     <button id="close-chart-button" class="delete">Close</button>
 </div>
+<div id="citations">
+    2022 NCDP (Childcare Prices), WVU Knee Regulatory Research Center for Regulatory Restrictiveness Ranking, Childcare Aware of America for Childcare Center Quality Ranking
+</div>
 </div>
 
 <section>
@@ -261,6 +264,7 @@ function renderExtraLine() {
 
     barExtra
         .append("text")
+        .style("fill", "#2a326e")
         .attr("text-anchor", "middle")
         .attr("x", 12)
         .attr("y", yScale(.07) - 45)
@@ -315,7 +319,8 @@ function renderDetailChart(stateDataProperties, stateName, type, id) {
         .call(d3.axisBottom(xScale))
         .selectAll("text")
         .attr("transform", "translate(-10,0)rotate(-45)")
-        .style("text-anchor", "end");
+        .style("text-anchor", "end")
+        .style("fill", "#2a326e");
 
     const yScale = d3.scaleLinear()
         .domain([0, 0.26]) // e.g. Max cost share 30%
@@ -372,6 +377,7 @@ function renderDetailChart(stateDataProperties, stateName, type, id) {
 
         detailBarContainer
             .append("text")
+            .style("fill", "#2a326e")
             .attr("text-anchor", "middle")
             .attr("x", 110)
             .attr("y", 180)
@@ -390,6 +396,7 @@ function renderDetailChart(stateDataProperties, stateName, type, id) {
         if (stateName === "Mississippi") {
             detailBarContainer
                 .append("text")
+                .style("fill", "#2a326e")
                 .attr("class", "bad-text-title")
                 .attr("x", textBastardry[type]["x1"])
                 .attr("y", textBastardry[type]["y"])
@@ -424,6 +431,7 @@ function renderDetailChart(stateDataProperties, stateName, type, id) {
     //bad title solution
     detailBarContainer
         .append("text")
+        .style("fill", "#2a326e")
         .attr("class", "bad-text-title")
         .attr("x", textBastardry[type]["x1"])
         .attr("y", textBastardry[type]["y"])
@@ -438,6 +446,7 @@ function renderDetailChart(stateDataProperties, stateName, type, id) {
     // Add Title
     detailBarContainer
         .append("text")
+        .style("fill", "#2a326e")
         .attr("x", 100)
         .attr("y", 60)
         .attr("text-anchor", "middle")
@@ -449,6 +458,7 @@ function renderDetailChart(stateDataProperties, stateName, type, id) {
     hoverLabelGroup.selectAll("text")
         .data(chartData)
         .join("text")
+        .style("fill", "#2a326e")
         .attr("id", (d, i) => `${stateName}-` + `${type}-` + `${d.label}`)
         .attr("class", "bar-val")
         .attr("text-anchor", "middle")
@@ -549,17 +559,23 @@ function initializeMap(data) {
             legendGroup.append("text")
                 .attr("class", "legend-tick")
                 .attr("id", "legend-max")
+                .transition() // Smooth transition effect
+                .duration(500)
                 .attr("x", 695)
                 .attr("y", 165)
                 .text("Most")
+                .style("fill", "#2a326e")
                 .style("opacity", 1)
 
             legendGroup.append("text")
                 .attr("class", "legend-tick")
-                .attr("id", "legend-max")
+                .attr("id", "legend-min")
+                .transition() // Smooth transition effect
+                .duration(500)
                 .attr("x", 695)
                 .attr("y", 345)
                 .text("Least")
+                .style("fill", "#2a326e")
                 .style("opacity", 1)
 
             grad = legendGroup.append('defs')
@@ -590,7 +606,10 @@ function initializeMap(data) {
                 .attr('height', 200)
 
             } else {
-            
+            d3.selectAll('.legend-tick')
+                .transition()
+                .duration(500)
+                .style("opacity", 0)
 
             d3.select('#legend')
                 .transition() // Smooth transition effect
@@ -637,6 +656,7 @@ function initializeMap(data) {
         .attr("text-anchor", "middle")
         .attr("alignment-baseline", "central")
         .style("font-size", 11)
+        .style("fill", "#2a326e")
         .style("fill", "white")
         .on("click", function(event, d) {
             renderDetailChart(d.properties, d.properties.STATE_NAME, 'CENTER', "#center-bar-svg");
