@@ -17,6 +17,9 @@
         h1 {
             color: #2a326e;
         }
+        h3 {
+            color: #2a326e;
+        }
         subtitle {
             font-size: 18px;
             color: #484d71;
@@ -52,8 +55,13 @@
             height: 40px;
             line-height: 1.5;
             border-radius: 10px;
-            padding-bottom: 10px;
+            border-width: 2px;
+            border-color: #2a326e;
+            color: #2a326e;
             text-align: center;
+        }
+        option {
+            color: #2a326e;
         }
     </style>
 </head>
@@ -75,7 +83,7 @@
 
 <div class="select is-multiple">
 <select id="dropdown-selector">
-    <option value="default">--</option>
+    <option value="default">--Select a Dropdown--</option>
     <option value="R_Rank">Regulatory Restrictiveness</option>
     <option value="Qual_Rank">Childcare Center Quality</option>
     <!-- Add options for all 8 cost columns + MHI -->
@@ -110,6 +118,17 @@ const projection = d3.geoMercator()
 const path = d3.geoPath()
     .projection(projection)
 
+function overSelect(event) {
+    d3.select(this).style("background-color", "#f3f4f6");
+}
+function offSelect(event) {
+    d3.select(this).style("background-color", "#ffffff");
+}
+
+let selectDrop = d3.select("#dropdown-selector")
+    .on("mouseover", overSelect)
+    .on("mouseleave", offSelect)
+
 let tooltip = d3.select("#maingraphic")
     .append("div")
     .style("opacity", 0)
@@ -118,8 +137,10 @@ let tooltip = d3.select("#maingraphic")
     .style("border", "solid")
     .style("border-width", "2px")
     .style("border-radius", "5px")
+    .style("border-color", "#2a326e")
     .style("padding", "5px")
     .style("font-size", 10)
+    .style("fill", "#2a326e")
     .style("position", "absolute");
 
 let mouseover = function(event, d) {
@@ -132,7 +153,11 @@ let mousemove = function(event, d) {
     if (currentDataKey === 'default') {
         message = "This cell represents " + `<strong>${((d.properties.CHILD_POP)/725000).toFixed(2)}%</strong>` + " of American children.";
     } else if (currentDataKey === 'R_Rank') {
+        if (d.properties.R_Rank === null) {
+            message = "Not Ranked"
+        } else {
         message = "Rank:" + `${d.properties.R_Rank}`;
+        }
     } else {
         message = "Rank:" + `${d.properties.Qual_Rank}`
     }
@@ -146,10 +171,6 @@ let mouseleave = function(d) {
     tooltip.style("opacity", 0)
     d3.select(this).style("cursor", "default");
 };
-
-let clickDash = function(event, d) {
-
-}
 
 let currentDataKey = 'default';
 
@@ -452,7 +473,44 @@ function initializeMap(data) {
             });
             
         // Update any legends you have here
-    }
+        if (currentDataKey != "default") {
+            console.log(colors)
+            grad = svg.append('defs')
+                .append('linearGradient')
+                .attr('id', 'grad')
+                .attr('x1', '0%')
+                .attr('x2', '0%')
+                .attr('y1', '0%')
+                .attr('y2', '100%');
+
+            grad.selectAll('stop')
+                .data(colors)
+                .enter()
+                .append('stop')
+                .style('stop-color', function(d){ return d; })
+                .attr('offset', function(d,i){
+                    return 100 * (i / (colors.length - 1)) + '%';
+                })
+
+            d3.select('#legend')
+                .attr('x', 650)
+                .attr('width', 40)
+                .style('fill', 'url(#grad)')
+                .transition() // Smooth transition effect
+                .duration(500)
+                .attr('y', 150)
+                .attr('height', 200)
+
+            } else {
+            d3.select('#legend')
+                .transition() // Smooth transition effect
+                .duration(500)
+                .attr('y', 0)
+                .attr("height", 0);
+            }
+            
+            
+        }
 
     const colorScale = d3.scaleLinear()
     
@@ -499,6 +557,14 @@ function initializeMap(data) {
         .on("mouseover", mouseover)
         .on("mousemove", mousemove)
         .on("mouseleave", mouseleave);
+
+    svg.append("rect")
+        .attr("id", "legend")
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('width', 0)
+        .attr('height', 0)
+
 
     // ... use the update function to set initial colors
     updateMapColors(currentDataKey, data); 
