@@ -13,20 +13,31 @@
         body {
             font-family: Roboto;
             background-color: #f8e7f8;
+            color: #2a326e;
         }
         h1 {
             color: #2a326e;
+            font-size: 28px;
+        }
+        .headers {
+            color: #2a326e;
+            display: flex;
         }
         h3 {
             color: #2a326e;
         }
-        subtitle {
-            font-size: 18px;
-            color: #484d71;
+        .headers subtitle {
+            /* font-size: 18px;
+            color: #484d71; */
+            color: #2a326e;
+            font-size: 24px;
+            align-self: center;
+            padding-left: 10px;
+
         }
-        header {
+        /* header {
             margin-bottom: 12px;
-        }
+        } */
         .main {
             width:fit-content;
             display: grid;
@@ -62,6 +73,7 @@
         }
         .panel {
             display: flex;
+            justify-content: space-evenly;
         }
         select {
             width: 250px;
@@ -89,8 +101,11 @@
         option {
             color: #2a326e;
         }
+        /* #note {
+            font-size: 10px;
+        } */
         #citations {
-            font-size: 9px;
+            font-size: 10px;
             display: flex;
             justify-content: right;
         }
@@ -99,18 +114,33 @@
 <body>
 
 <!-- Create an element where the map will take place -->
-<div> 
+<div>
+    <div class="headers"> 
     <header>
-        <h1>US Childcare Affordability (2022)</h1>
+        <h1>Examining US Childcare Affordability</h1>
+    </header>
         <subtitle>
-            <p>The US Department of Health and Human Services Center data represents childcare provided in 
+            -- Callie Leone
+        </subtitle>
+    </div>
+    <div id = "preamble" class="general-text">
+        <p>Affordable and accessible childcare is a nationwide issue.
+            The U.S. Department of Health and Human Services defines childcare 
+            as affordable if it costs no more than 7% of annual household income.
+            <strong>Click around on the states below to see if this benchmark was within reach for most Americans in 2022.</strong> 
+            According to the National Database on Childcare Prices, "center" data represents childcare provided in 
             commercial buildings, serving multiple groups or
-            classrooms of similarly aged children. They also collect
-            data on regulated "family" childcare homes, which care for
+            classrooms of similarly aged children. Regulated "family" childcare homes typically care for
             small groups of children in a residential building, such as
             a house, apartment, or condo unit.</p>
-        </subtitle>
-    </header>
+        <p>In the years since 2022, cost of living related expenses have exploded. Childcare costs in particular have continued to soar across the country, with the 
+            exception of New Mexico, which has become the first state to offer free childcare to all residents. <strong>Take a look at the map's dropdown
+            menu and see how states rank in terms of restrictive regulatory environments and childcare center quality.</strong> Reliable, quality childcare
+            is necessary for the health and flourishing of our nation's families. How do you think its absence is affecting your community?
+        </p>
+    </div>
+        
+    
 </div>
 
 <div class="panel">
@@ -305,7 +335,7 @@ function renderDetailChart(stateDataProperties, stateName, type, id) {
     // Clear previous chart elements
 
     dashHeader
-    .html(`${stateName}` + " at a Glance"
+    .html("2022 " + `${stateName}` + " at a Glance"
     )
 
     detailDashContainer.classed("is-visible", true);
@@ -553,7 +583,7 @@ function initializeMap(data) {
             colors = ["#1c5fed", "#8de3db"] //#43d7c8
             colorScale.range(colors);
         } else {
-            colors = ["#8618ad", "#f5b3cd"]
+            colors = ["#8618ad", "#ff2b95"] //#fc5dc7
             colorScale.range(colors);
         }
 
