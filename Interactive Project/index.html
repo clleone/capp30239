@@ -36,7 +36,8 @@
             background-color: #ffffff;
             box-shadow: 0px 3px 12px rgba(183, 8, 93, 0.361);
         } 
-        .dash {
+        #dash {
+            display: none;
             width:fit-content;
             display: grid;
             place-items: center;
@@ -45,6 +46,9 @@
             background-color: #ffffff;
             margin-left: 7px;
             box-shadow: 0px 3px 12px rgba(107, 8, 183, 0.361);
+        }
+        .is-visible {
+            display: block; 
         }
         .panel {
             display: flex;
@@ -92,13 +96,14 @@
 </div>
 
 
-<div class="dash">
+<div id="dash" class="is-hidden">
     <h3 id="Dash-header"></h3>
     <div class="bar-group">
         <svg id="center-bar-svg"></svg>
         <svg id="family-bar-svg"></svg>
         <svg id="dhhs-expl"></svg>
     </div>
+    <button id="close-chart-button" class="delete"></button>
 </div>
 </div>
 
@@ -249,6 +254,9 @@ function renderDetailChart(stateDataProperties, stateName, type, id) {
     dashHeader
     .html(`${stateName}` + " at a Glance"
     )
+
+    //detailChartContainer.classed("is-visible", true); 
+
     const detailBarContainer = d3.select(id) // Or select an existing div
         .attr("width", 200)
         .attr("height", 410)
@@ -288,6 +296,20 @@ function renderDetailChart(stateDataProperties, stateName, type, id) {
         .attr("class", "bar-y-axis")
         .call(d3.axisLeft(yScale).tickFormat(customTick))
         .attr("transform", `translate(30,0)`);
+
+    function overBar(event, d) {
+        d3.select(this).style("opacity", .8)
+        console.log(`#${stateName}-` + `${type}-` + `${d.label}`)
+        d3.select("#Rhode Island-CENTER-Infant").style("fill", "black")
+        d3.select(`#${stateName}-` + `${type}-` + `${d.label}`)
+            .style("opacity", 1);
+    };
+
+    function offBar(event, d) {
+        d3.select(this).style("opacity", 1)
+        d3.select(`#${stateName}-` + `${type}-` + `${d.label}`)
+            .style("opacity", 0);
+    };
 
     textBastardry = {"CENTER": {"text": "Cost to Send One Child", "x1":35, "x2": 95, "y":12, "sub": "of State Median"}, 
                     "FAMILY": {"text": "to Daycare Expressed as %", "x1":0, "x2": 0, "y":12, "sub": "Household Income"}}
@@ -393,6 +415,21 @@ function renderDetailChart(stateDataProperties, stateName, type, id) {
         .attr("text-anchor", "middle")
         .text(`${typeLabels[type]}` + "-based Care");
 
+    let hoverLabelGroup = detailBarContainer.append("g")
+        .attr("class", "hover-label-group");
+
+    hoverLabelGroup.selectAll("text")
+        .data(chartData)
+        .join("text")
+        .attr("id", (d, i) => `${stateName}-` + `${type}-` + `${d.label}`)
+        .attr("class", "bar-val")
+        .attr("text-anchor", "middle")
+        .attr("x", d => xScale(d.label) + 45)
+        .attr("y", d => yScale(d.value) + 20)
+        .text(d => `${parseInt(d.value*100)}%`)
+        .style("fill", "white")
+        .style('opacity', 0);
+
     // Draw the bars
     detailBarContainer.selectAll(".detail-bar")
         .data(chartData)
@@ -402,7 +439,9 @@ function renderDetailChart(stateDataProperties, stateName, type, id) {
         .attr("y", 355) // Offset for title/margin
         .attr("width", xScale.bandwidth())
         .attr("height", 0) // Assuming 100px main chart area height
-        .attr("fill", "#5f68b0");
+        .attr("fill", "#5f68b0")
+            .on("mouseover", overBar)
+            .on("mouseleave", offBar)
 
     detailBarContainer.selectAll("rect")
         .transition()
@@ -473,9 +512,13 @@ function initializeMap(data) {
             });
             
         // Update any legends you have here
+
         if (currentDataKey != "default") {
             console.log(colors)
-            grad = svg.append('defs')
+
+            legendGroup.selectAll("*").remove();
+
+            grad = legendGroup.append('defs')
                 .append('linearGradient')
                 .attr('id', 'grad')
                 .attr('x1', '0%')
@@ -487,12 +530,13 @@ function initializeMap(data) {
                 .data(colors)
                 .enter()
                 .append('stop')
-                .style('stop-color', function(d){ return d; })
+                .style('stop-color', function(d){ console.log(d); return d; })
                 .attr('offset', function(d,i){
                     return 100 * (i / (colors.length - 1)) + '%';
-                })
+                });
 
-            d3.select('#legend')
+            legendGroup.append('rect')
+                .attr("id", "legend")
                 .attr('x', 650)
                 .attr('width', 40)
                 .style('fill', 'url(#grad)')
@@ -508,8 +552,7 @@ function initializeMap(data) {
                 .attr('y', 0)
                 .attr("height", 0);
             }
-            
-            
+
         }
 
     const colorScale = d3.scaleLinear()
@@ -558,7 +601,18 @@ function initializeMap(data) {
         .on("mousemove", mousemove)
         .on("mouseleave", mouseleave);
 
-    svg.append("rect")
+    const legendGroup = svg.append("g")
+    .attr("class", "legend-container");
+
+    grad = legendGroup.append('defs')
+        .append('linearGradient')
+        .attr('id', 'grad')
+        .attr('x1', '0%')
+        .attr('x2', '0%')
+        .attr('y1', '0%')
+        .attr('y2', '100%');
+    
+    legendGroup.append("rect")
         .attr("id", "legend")
         .attr('x', 0)
         .attr('y', 0)
