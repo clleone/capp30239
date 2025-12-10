@@ -583,7 +583,7 @@ function initializeMap(data) {
             colors = ["#1c5fed", "#8de3db"] //#43d7c8
             colorScale.range(colors);
         } else {
-            colors = ["#8618ad", "#ff2b95"] //#fc5dc7
+            colors = ["#8618ad", "#fc5dad"] //#fc5dc7
             colorScale.range(colors);
         }
 
@@ -760,7 +760,7 @@ function initializeMap(data) {
 //     .attr("y", d => y(0))
 
 // Load external data and boot
-d3.json("https://raw.githubusercontent.com/clleone/capp30239/refs/heads/main/Interactive%20Project/test_gj.geojson").then(function(data){
+d3.json("https://raw.githubusercontent.com/clleone/capp30239/refs/heads/main/Interactive%20Project/childcare.geojson").then(function(data){
     console.log("Inspecting properties of the first feature:", data.features[0].properties);
     initializeMap(data.features);
 })
