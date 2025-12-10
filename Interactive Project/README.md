@@ -4,13 +4,13 @@ Callie Leone
 
 ## Description
 
-Particularly since the COVID-19 pandemic, childcare affordability has been a hot
-issue nationwide. While many of us understand and agree that childcare is
+Since the COVID-19 pandemic, childcare affordability has been a particularly hot
+topic nationwide. While many of us share the understanding that childcare is
 "expensive", visualization helps to add vital texture and contextualize the extent 
-to which quality childcare is financially out of reach for the average family 
-across the country. Furthermore, viewers can play around with choropleth maps
-that symbolize rankings for childcare regulatory restrictiveness and childcare 
-center quality to investigate the complex relationship between regulation, quality,
+to which quality childcare is financially out of reach for the average American family. 
+Furthermore, viewers can play around with choropleth maps that symbolize rankings
+for childcare regulatory restrictiveness and childcare center quality to 
+investigate the complex and at times tenous relationship between regulation, quality,
 and affordability.
 
 ![Viz vision](Milestones/interactiveprojectpreview.png)
