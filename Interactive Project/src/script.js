@@ -538,7 +538,7 @@ function initializeMap(data) {
 }
 
 //run it
-d3.json("https://raw.githubusercontent.com/clleone/capp30239/refs/heads/main/Interactive%20Project/childcare.geojson").then(function(data){
+d3.json("https://raw.githubusercontent.com/clleone/capp30239/refs/heads/main/Interactive%20Project/data/childcare.geojson").then(function(data){
     console.log("Inspecting properties of the first feature:", data.features[0].properties);
     initializeMap(data.features);
 })
