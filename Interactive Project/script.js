@@ -208,7 +208,7 @@ function renderDetailChart(stateDataProperties, stateName, type, id) {
             .style("opacity", 0);
     };
 
-    textBastardry = {"CENTER": {"text": "Cost to Send One Child", "x1":32, "x2": 82, "y":12, "sub": "of State Median"}, 
+    badTextSolution = {"CENTER": {"text": "Cost to Send One Child", "x1":32, "x2": 82, "y":12, "sub": "of State Median"}, 
                     "FAMILY": {"text": "to Daycare Expressed as %", "x1":0, "x2": 0, "y":12, "sub": "Household Income"}}
 
     if (noDataStates.includes(stateName) || (stateName === "Mississippi" & type === "FAMILY")) {
@@ -219,18 +219,6 @@ function renderDetailChart(stateDataProperties, stateName, type, id) {
             .attr("r", 0)
             .style("fill", "rgb(0, 0, 0)")
             .style("opacity", .1)
-            // .append("circle")
-            // .attr("cx", 110)
-            // .attr("cy", 190)
-            // .attr("r", 40)
-            // .style("fill", "rgb(0, 0, 0)")
-            // .style("opacity", .1)
-            // .append("circle")
-            // .attr("cx", 110)
-            // .attr("cy", 190)
-            // .attr("r", 20)
-            // .style("fill", "rgb(0, 0, 0)")
-            // .style("opacity", .1)
         
         detailBarContainer.selectAll("circle")
             .transition()
@@ -261,15 +249,15 @@ function renderDetailChart(stateDataProperties, stateName, type, id) {
                 .append("text")
                 .style("fill", "#2a326e")
                 .attr("class", "bad-text-title")
-                .attr("x", textBastardry[type]["x1"])
-                .attr("y", textBastardry[type]["y"])
+                .attr("x", badTextSolution[type]["x1"])
+                .attr("y", badTextSolution[type]["y"])
                 .append("tspan")
-                .text(`${textBastardry[type]["text"]}`)
-                .attr("x", textBastardry[type]["x1"])
+                .text(`${badTextSolution[type]["text"]}`)
+                .attr("x", badTextSolution[type]["x1"])
                 .append("tspan")
-                .attr("x", textBastardry[type]["x2"])
+                .attr("x", badTextSolution[type]["x2"])
                 .attr("dy", "1.2em")
-                .text(`${textBastardry[type]["sub"]}`)
+                .text(`${badTextSolution[type]["sub"]}`)
 
             detailBarContainer.append("line")
                 .attr('class', 'dhhs-marker')
@@ -297,15 +285,15 @@ function renderDetailChart(stateDataProperties, stateName, type, id) {
         .append("text")
         .style("fill", "#2a326e")
         .attr("class", "bad-text-title")
-        .attr("x", textBastardry[type]["x1"])
-        .attr("y", textBastardry[type]["y"])
+        .attr("x", badTextSolution[type]["x1"])
+        .attr("y", badTextSolution[type]["y"])
         .append("tspan")
-        .text(`${textBastardry[type]["text"]}`)
-        .attr("x", textBastardry[type]["x1"])
+        .text(`${badTextSolution[type]["text"]}`)
+        .attr("x", badTextSolution[type]["x1"])
         .append("tspan")
-        .attr("x", textBastardry[type]["x2"])
+        .attr("x", badTextSolution[type]["x2"])
         .attr("dy", "1.2em")
-        .text(`${textBastardry[type]["sub"]}`)
+        .text(`${badTextSolution[type]["sub"]}`)
 
     // Add Title
     detailBarContainer
@@ -362,19 +350,12 @@ function renderDetailChart(stateDataProperties, stateName, type, id) {
         .style("stroke-dasharray", ("3, 3"))
         .style('fill', "#2a326e")
         .attr("stroke-width", 2);
-        
-    // (Optional: Add axes using d3.axisBottom and d3.axisLeft)
     }
 }
 
 function initializeMap(data) {
-    // Determine initial domain using the default key
-    // 2. The update function is much cleaner now:
     function updateMapColors(newKey, data) {
         currentDataKey = newKey;
-
-        //console.log(d.properties[currentDataKey])
-        // Recalculate color domain based on the properties of the selected key
         
         if (currentDataKey === 'default') {
             minVal = 1;
@@ -400,21 +381,17 @@ function initializeMap(data) {
             colorScale.range(colors);
         }
 
-        // Select all hexagon paths and update the fill style
         d3.selectAll(".state_hex")
-            .transition() // Smooth transition effect
+            .transition()
             .duration(500)
             .style("fill", function(d) {
-                // Access the value directly from the feature properties
                 if (newKey === 'default') {
                     return "#5f68b0";
                 } else {
                     const value = d.properties[currentDataKey];
-                    return value ? colorScale(value) : "#a8adaa"; // Return color or grey fallback
+                    return value ? colorScale(value) : "#a8adaa";
                 };
             });
-            
-        // Update any legends you have here
 
         if (currentDataKey != "default") {
             console.log(colors)
@@ -424,10 +401,10 @@ function initializeMap(data) {
             legendGroup.append("text")
                 .attr("class", "legend-tick")
                 .attr("id", "legend-max")
-                .transition() // Smooth transition effect
-                .duration(500)
                 .attr("x", 695)
                 .attr("y", 165)
+                .transition()
+                .duration(600)
                 .text("Most")
                 .style("fill", "#2a326e")
                 .style("opacity", 1)
@@ -435,10 +412,10 @@ function initializeMap(data) {
             legendGroup.append("text")
                 .attr("class", "legend-tick")
                 .attr("id", "legend-min")
-                .transition() // Smooth transition effect
-                .duration(500)
                 .attr("x", 695)
                 .attr("y", 345)
+                .transition()
+                .duration(600)
                 .text("Least")
                 .style("fill", "#2a326e")
                 .style("opacity", 1)
@@ -465,7 +442,7 @@ function initializeMap(data) {
                 .attr('x', 650)
                 .attr('width', 40)
                 .style('fill', 'url(#grad)')
-                .transition() // Smooth transition effect
+                .transition()
                 .duration(500)
                 .attr('y', 150)
                 .attr('height', 200)
@@ -477,7 +454,7 @@ function initializeMap(data) {
                 .style("opacity", 0)
 
             d3.select('#legend')
-                .transition() // Smooth transition effect
+                .transition()
                 .duration(500)
                 .attr('y', 0)
                 .attr("height", 0);
@@ -550,9 +527,8 @@ function initializeMap(data) {
         .attr('width', 0)
         .attr('height', 0)
 
-
-    // ... use the update function to set initial colors
-    updateMapColors(currentDataKey, data); 
+    // updates choropleth or lackthereof
+    updateMapColors(currentDataKey, data);
 
     d3.select("#dropdown-selector")
         .on("change", function() {
@@ -561,7 +537,7 @@ function initializeMap(data) {
     });
 }
 
-// Load external data and boot
+//run it
 d3.json("https://raw.githubusercontent.com/clleone/capp30239/refs/heads/main/Interactive%20Project/childcare.geojson").then(function(data){
     console.log("Inspecting properties of the first feature:", data.features[0].properties);
     initializeMap(data.features);
